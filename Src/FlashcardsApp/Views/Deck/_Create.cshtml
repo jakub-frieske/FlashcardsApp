@@ -1,0 +1,39 @@
+﻿@using FlashcardsApp.ViewModels;
+@model CreateDeckViewModel
+
+
+
+                            
+<div class="modal-header text-center">
+    <h4 class="modal-title w-100 font-weight-bold" id="staticBackdropLabel">
+        Create new Flashcard Set
+    </h4>
+    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+    </button>
+</div>
+<div class="modal-body">
+<form id="submitForm"  method="post" asp-action="Create" enctype="multipart/form-data">
+    <div class="form-group mb-3">
+        <label asp-for="Title">Title</label>
+        <input asp-for="Title" class="form-control">
+        <span asp-validation-for="Title" class="text-danger"></span>
+    </div>
+    <div class="form-group mb-3">
+        <label asp-for="Description">Description</label>
+        <textarea asp-for="Description" class="form-control" rows="3" cols="50"></textarea>
+        <span asp-validation-for="Description" class="text-danger"></span>
+    </div>
+    <div class="form-group mb-3">
+        <label>Image</label>
+        <input asp-for="ImageToUpload" type="file" class="form-control" placeholder="Image" />
+        <span asp-validation-for="ImageToUpload" class="text-danger"></span>
+    </div>
+</form>
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+    <button type="submit" class="submitForm btn btn-primary" form="submitForm">
+        Create
+    </button>
+</div>
+

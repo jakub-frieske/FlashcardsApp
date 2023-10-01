@@ -1,0 +1,40 @@
+﻿@using FlashcardsApp.ViewModels
+@model FlashcardViewModel
+
+
+
+<div class="modal-header text-center">
+    <h4 class="modal-title w-100 font-weight-bold" id="staticBackdropLabel">
+        Edit flashcard
+    </h4>
+    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+    </button>
+</div>
+<form method="post" asp-action="Edit"  id="submitForm" class="modal-body">
+
+                <div class="form-group mb-3">
+                    <label asp-for="Term">Term</label>
+                    <input asp-for="Term" class="form-control">
+                    <span asp-validation-for="Term" class="text-danger"></span>
+                </div>
+                <div class="form-group mb-3">
+                    <label asp-for="Definition">Definition</label>
+                    <input asp-for="Definition" class="form-control">
+                    <span asp-validation-for="Definition" class="text-danger"></span>
+                </div>
+                <input type="hidden"
+                       value="@Model.DeckId"
+                       asp-for="@Model.DeckId" />
+               
+</form>
+
+<div class="modal-footer">
+    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+    <button type="submit" class="submitForm btn btn-primary" form="submitForm">
+        Update
+    </button>
+</div>
+
+
+
+

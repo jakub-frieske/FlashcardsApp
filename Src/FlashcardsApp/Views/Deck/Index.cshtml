@@ -1,0 +1,82 @@
+﻿@model IEnumerable<Deck>
+
+@{
+    ViewData["Title"] = "Flashcard Sets";
+}
+
+<style>
+    .card.card-image {
+        background-position: center;
+        background-size: cover;
+        
+    }
+
+    .rgba-black-strong {
+        background-color: rgba(0,0,0,0.4);
+    }
+</style>
+<div class="container px-3 py-3 pt-md-5 pb-md-4 ">
+    <div class="container mt-3">
+
+
+        <div class="card card-cascade narrower">
+
+            <div class="view view-cascade gradient-card-header blue-gradient narrower py-2 mx-4 mb-3 d-flex justify-content-center align-items-center">
+                <h1 class="text-white mx-3">Flashcard Set</h1>
+
+
+                @Html.ActionLink("Create new flashcard set", "Create", "Deck",
+                null, new { @class = "modal-link btn btn-success d-inline-block", data_bs_toggle="modal", data_bs_target="#staticBackdrop" } )
+
+            </div>
+
+            <div class="px-4 pb-3 m-3">
+
+                    <div class="row feature-list feature-list-sm">
+                        @foreach (var item in Model)
+                        {
+                            <div class="col-3 mb-4" >
+                            <div class="card" >
+                                <div class="card card-image" style="background-image: url(@item.Image); ">
+                                        <div class="text-white text-center d-flex align-items-center justify-content-center  rgba-black-strong py-5 px-4">
+                                            <div>
+                                                <h4 class="card-title text-break pt-2"><strong>@item.Title</strong></h4>
+                                                <p class="text-break">
+                                                    @item.Description
+                                                </p>
+                                                <a type="button" class="btn btn-primary" asp-controller="Deck" asp-action="Detail" asp-route-id="@item.Id">
+                                                    <i class="fas fa-clone left"></i> View project
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+
+
+                                    <div class="card-footer card-footer-borderless d-flex justify-content-end">
+                                        <div class="d-flex">
+                                            <a type="button" class="modal-link btn btn-sm btn-primary me-2" data-bs-toggle="modal" data-bs-target="#staticBackdrop" asp-controller="Deck" asp-action="Edit" asp-route-id="@item.Id">
+                                                Edit <i class="fas fa-pen-square ml-1"></i>
+                                            </a>
+                                            <a type="button" class="modal-link btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#staticBackdrop"
+                                               asp-controller="Deck" asp-action="Delete" asp-route-id="@item.Id">
+                                                Delete <i class="fas fa-trash-alt fa-fw"></i>
+                                            </a>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+
+                </div>
+
+
+        </div>
+    </div>
+</div>
+
+
+    
+
+   

@@ -1,0 +1,82 @@
+﻿@using FlashcardsApp.ViewModels;
+@model EditDeckViewModel
+
+@{
+    ViewData["Title"] = "Flashcard Set " + @Model.Title;
+}
+
+<div class="container px-3 py-3 pt-md-5 pb-md-4 ">
+    <div class="container mt-3">
+
+
+        <div class="card card-cascade narrower">
+
+            <div class="view view-cascade gradient-card-header blue-gradient narrower py-2 mx-4 mb-3 d-flex justify-content-center align-items-center">
+                <h1 class="text-white mx-3">@Model.Title</h1>
+                <a type="button" class="modal-link btn btn-primary d-inline-block" data-bs-toggle="modal" data-bs-target="#staticBackdrop" 
+                asp-controller="Flashcard" asp-action="Create" asp-route-deckId="@Model.Id">
+                    <i class="fas fa-clone left"></i> Create new flashcard
+                </a>
+            </div>
+
+            <div class="px-4 pb-3">
+                <div class="table-wrapper mb-4">
+                    <table class="table table-hover mb-0">
+                        <thead>
+                            <tr>
+                                <th>
+                                    Lp
+                                </th>
+                                <th>
+                                    Term
+                                </th>
+                                <th>
+                                    Definition
+                                </th>
+                                <th style="width:  10%">
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                                @for (var i = 0; i < Model.Flashcards.Count; i++)
+                                {
+                                <tr>
+                                    <td>@(i + 1)</td>
+                                    <td>@Model.Flashcards[i].Term</td>
+                                    <td>@Model.Flashcards[i].Definition</td>
+                                    <td>
+                                        <input type="hidden"
+                                               value="@Model.Flashcards[i].Id"
+                                               asp-for="@Model.Flashcards[i].Id" />
+                                        <input type="hidden"
+                                               value="@Model.Flashcards[i].DeckId"
+                                               asp-for="@Model.Flashcards[i].DeckId" />
+                                        <div class="col">
+                                            <a type="button" type="button" class="modal-link btn btn-outline-primary btn-rounded btn-sm px-2"
+                                               data-bs-toggle="modal" data-bs-target="#staticBackdrop"
+                                               asp-controller="Flashcard" asp-action="Edit" asp-route-id="@Model.Flashcards[i].Id">
+                                                <i class="fas fa-pencil-alt mt-0"></i>
+                                            </a>
+
+                                            <form asp-action="Delete" method="post" asp-controller="Flashcard" class="d-inline-block">
+                                                <input type="hidden"
+                                                       value="@Model.Flashcards[i].Id"
+                                                       asp-for="Id" />
+                                                <button type="submit" class="btn btn-outline-danger btn-rounded btn-sm px-2">
+                                                    <i class="far fa-trash-alt mt-0"></i>
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </td>
+                                </tr>
+                                }
+
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+</div>

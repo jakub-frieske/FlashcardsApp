@@ -1,0 +1,91 @@
+﻿@using FlashcardsApp.ViewModels;
+@model ExamViewModel
+
+@{
+    ViewData["Title"] = "Start Exam";
+}
+
+
+<div class="container px-3 py-3 pt-md-5 pb-md-4 ">
+    <div class="container mt-3">
+
+        <div class="card card-cascade narrower">
+            <div class="view view-cascade gradient-card-header green-gradient narrower pb-2 pt-3 mx-4 mb-3">
+                <h1 class="text-white mx-3">@Model.Title</h1>
+                <h4 class="text-white mx-3">@Model.Questions[0].Flashcard.Deck.Title</h4>
+            </div>
+
+            <div class="px-4 pb-3 m-2">
+                <form method="post" asp-action="Index"  >
+                    <input type="hidden"
+                           value="@Model.Id"
+                           asp-for="@Model.Id" /> 
+                     <input type="hidden"
+                       value="@Model.Title"
+                       asp-for="@Model.Title" />
+                       
+                       
+                    
+                   
+                @for (var i=0; i< Model.Questions.Count; i++)
+                {
+                    <hr />
+                    <span class="d-flex justify-content-center align-items-center mb-3">Question @(i+1)</span>
+                        <div class="row mb-2 d-flex align-items-center">
+                            <input type="hidden"
+                                   value="@Model.Questions[i].Id"
+                                   asp-for="@Model.Questions[i].Id" />
+                            <input type="hidden"
+                                   value="@Model.Questions[i].Flashcard.DeckId"
+                                   asp-for="@Model.Questions[i].Flashcard.DeckId" />
+                            <input type="hidden"
+                                   value="@Model.Questions[i].Flashcard.Term"
+                                   asp-for="@Model.Questions[i].Flashcard.Term" />
+                            <input type="hidden"
+                                   value="@Model.Questions[i].Flashcard.Definition"
+                                   asp-for="@Model.Questions[i].Flashcard.Definition" />
+                                <div class="col-md-6">
+                                <div class="card h-100">
+                                        <div class="card-header">
+                                            Question
+                                        </div>
+                                        <div class="card-body">
+                                        <blockquote class="blockquote   ">
+                                            <div class="d-flex justify-content-center align-items-center">
+                                                <label class="fst-italic fw-bold ">
+                                                    @Model.Questions[i].Flashcard.Term
+                                                </label>
+                                            </div>
+                                            </blockquote>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6">
+                                <div class="card h-100">
+                                        <div class="card-header">
+                                            Answer
+                                        </div>
+                                        <div class="card-body">
+                                        <blockquote class="blockquote">
+                                            <div class="d-flex justify-content-center align-items-center">
+                                            <input asp-for="@Model.Questions[i].UserAnswer" class="form-control">
+                                        </div>
+                                            </blockquote>
+                                        </div>
+                                    </div>
+                                </div>
+                    </div>
+                    
+                }
+
+                    <div class="text-center">
+                        <input type="submit" value="Done" class="btn btn-primary"  />
+                    </div>
+                </form>
+
+            </div>
+
+        </div>
+    </div>
+</div>

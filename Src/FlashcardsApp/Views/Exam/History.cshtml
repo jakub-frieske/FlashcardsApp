@@ -1,0 +1,94 @@
+﻿@model List<Exam>
+
+@{
+    ViewData["Title"] = "Exams History";
+}
+<style>
+    .card.card-cascade.narrower .view.view-cascade {
+        margin-top: -1.25rem;
+        margin-right: 4%;
+        margin-left: 4%;
+    }
+
+    .card.card-cascade .view.view-cascade.gradient-card-header {
+        padding: 1.6rem 1rem;
+        color: #fff;
+        text-align: center;
+    }
+
+    .card.card-cascade .view.view-cascade {
+        border-radius: 0.25rem;
+        -webkit-box-shadow: 0 5px 11px 0 rgba(0,0,0,0.18), 0 4px 15px 0 rgba(0,0,0,0.15);
+        box-shadow: 0 5px 11px 0 rgba(0,0,0,0.18), 0 4px 15px 0 rgba(0,0,0,0.15);
+    }
+
+    .view {
+        position: relative;
+        overflow: hidden;
+        cursor: default;
+    }
+
+    
+</style>
+<div class="container px-3 py-3 pt-md-5 pb-md-4 ">
+    <div class="container mt-3">
+
+
+        <div class="card card-cascade narrower">
+
+            <div class="view view-cascade gradient-card-header green-gradient narrower py-2 mx-4 mb-3 d-flex justify-content-center align-items-center">
+                <h1 class="text-white mx-3">Exams History</h1>
+                <a class="modal-link btn btn-primary d-inline-block " data-bs-toggle="modal" data-bs-target="#staticBackdrop" 
+                 asp-controller="Exam" asp-action="Create">Take exam</a>
+            </div>
+
+            <div class="px-4 pb-3">
+                <div class="table-wrapper">
+                    <table class="table table-hover mb-0">
+                        <thead>
+                            <tr>
+                                <th>
+                                    Lp
+                                </th>
+                                <th>
+                                    Title
+                                </th>
+                                <th>
+                                    Score
+                                </th>
+                                <th>
+                                    Solved
+                                </th>
+                                <th style="width:  5%">
+                                    Action
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @for (var i = 0; i < Model.Count; i++)
+                            {
+                                <tr>
+                                    <td>@(i + 1)</td>
+                                    <td>@Model[i].Title</td>
+                                    <td>@Model[i].Score</td>
+                                    <td>@Model[i].Solved</td>
+                                    <td>
+                                        <div class="col d-flex justify-content-center">
+                                            <a type="button" type="button" class="btn btn-outline-success btn-rounded btn-sm px-2"
+                                               asp-controller="Exam" asp-action="Detail" asp-route-id="@Model[i].Id">
+                                                <i class="fas fa-eye mt-0"></i>
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+</div>
