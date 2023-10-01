@@ -1,0 +1,180 @@
+﻿@using FlashcardsApp.ViewModels;
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - FlashcardsApp</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/FlashcardsApp.styles.css" asp-append-version="true" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+</head>
+<body style="background-color: #f6f7fb">
+    @{
+        var may = (ViewData["MayTakeExam"] ?? string.Empty) as string;
+    }
+    <header>
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+            <div class="container">
+                <a class="navbar-brand d-flex align-items-center justify-content-evenly " asp-area="" asp-controller="Deck" asp-action="Index" style="color: #4255ff; font-family: hurme_no2-webfont,-apple-system,BlinkMacSystemFont,sans-serif;">
+                    <img class="me-2" src="https://raw.githubusercontent.com/etrupja/TranslateGPT/master/TranslateGPT/wwwroot/images/languages-globe.png" width="25px"/>
+                    <span >FlashcardsApp</span>
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+                        aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-center">
+                    <ul class="navbar-nav nav-pills">
+                        <li class="nav-item ">
+                            <a class="nav-link text-dark Deck-Index Deck-Detail " asp-area="" asp-controller="Deck" asp-action="Index">Flashcard Set</a>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle Exam-Index" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Exams</a>
+                            <div class="dropdown-menu">
+                                @if(may == "true")
+                                    {
+
+                                    <a class="modal-link dropdown-item text-dark Exam-Create " data-bs-toggle="modal" data-bs-target="#staticBackdrop" asp-area="" asp-controller="Exam" asp-action="Create">Take exam</a>
+                                    <a class="dropdown-item text-dark Exam-History Exam-Detail " asp-area="" asp-controller="Exam" asp-action="History">History of tests</a>
+                                        <div class="dropdown-divider"></div>
+                                    <a class="dropdown-item text-dark Exam-RandomFlashcards " asp-area="" asp-controller="Exam" asp-action="RandomFlashcards">Random flashcard</a>
+                                    }else
+                                    {
+                                        <a class="modal-link dropdown-item Exam-Create disabled" data-bs-toggle="modal" data-bs-target="#staticBackdrop" asp-area="" asp-controller="Exam" asp-action="Create">Take exam</a>
+                                    <a class="dropdown-item Exam-History Exam-Detail" asp-area="" asp-controller="Exam" asp-action="History">History of tests</a>
+                                        <div class="dropdown-divider"></div>
+                                    <a class="dropdown-item Exam-RandomFlashcards disabled" asp-area="" asp-controller="Exam" asp-action="RandomFlashcards">Random flashcard</a>
+                                    }
+                                
+                               </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <style>
+        .card.card-cascade.narrower .view.view-cascade {
+            margin-top: -1.25rem;
+            margin-right: 4%;
+            margin-left: 4%;
+        }
+
+        .card.card-cascade .view.view-cascade.gradient-card-header {
+            padding: 1.6rem 1rem;
+            color: #fff;
+            text-align: center;
+        }
+
+        .card.card-cascade .view.view-cascade {
+            border-radius: 0.25rem;
+            -webkit-box-shadow: 0 5px 11px 0 rgba(0,0,0,0.18), 0 4px 15px 0 rgba(0,0,0,0.15);
+            box-shadow: 0 5px 11px 0 rgba(0,0,0,0.18), 0 4px 15px 0 rgba(0,0,0,0.15);
+        }
+
+        .view {
+            position: relative;
+            overflow: hidden;
+            cursor: default;
+        }
+
+        .blue-gradient {
+            background: linear-gradient(40deg,#45cafc,#303f9f) !important;
+        }
+
+        .blue-gradient {
+            background: linear-gradient(40deg,#45cafc,#303f9f) !important;
+        }
+
+        .green-gradient {
+            background: linear-gradient(40deg,#348F50,#56B4D3);
+        }
+
+    </style>
+
+    <div class="container" >
+        <main role="main" class="pb-3" >
+
+            <!-- Modal -->
+            <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="true" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable ">
+                    <div class="modal-content">
+
+                    </div>
+                </div>
+            </div>
+
+
+            @RenderBody()
+        </main>
+    </div>
+
+    <footer class="border-top footer text-muted">
+        <div class="container">
+            &copy; @DateTime.Now.Year - FlashcardsApp
+        </div>
+    </footer>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    <script>
+        $(document).ready(function () {
+            var activePageName = '@ViewData["ActivePage"]';
+
+            var activeElement = $('a.' + activePageName);
+            console.log(activeElement);
+            activeElement.addClass('active');
+            activeElement.addClass('text-white');
+
+          
+        });
+   
+
+        $(document).ready(function () {
+
+            $(".modal-link").click(function () {
+                var url = $(this).attr("href");
+                $(".modal-content").load(url, function (data) {
+                    $("#myModal1").modal("show");
+                })
+            });
+
+            $(document).on("submit", "#submitForm", function (e) {
+                e.preventDefault();
+                var form = $(this);
+
+                $.ajax({
+                    url: form.attr("action"),
+                    type: form.attr("method"),
+                    data: new FormData(this),
+                    processData: false,
+                    contentType: false,
+                    success: function (data) {
+                            console.log(data.redirectUrl)
+                            
+                        if ($(data).find(".field-validation-error").length > 0) {
+                            $('.modal-content').html(data);
+                        }
+                        else {
+                            if (data.redirectUrl) {
+                                window.location.href = data.redirectUrl;
+                            }
+                            else
+                                $('#staticBackdrop').modal('hide');
+                        }
+                    }
+                });
+            });
+            
+          
+
+        });
+
+    </script>
+    
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

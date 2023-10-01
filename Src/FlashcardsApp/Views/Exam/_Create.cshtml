@@ -1,0 +1,57 @@
+﻿@using FlashcardsApp.ViewModels;
+@model CreateExamViewModel
+
+<div class="modal-header text-center">
+    <h4 class="modal-title w-100 font-weight-bold" id="staticBackdropLabel">
+        Create new exam
+    </h4>
+    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+    </button>
+</div>
+
+<form method="post" asp-action="Create" id="submitForm" class="modal-body">
+
+        <div id="dropDownListdiv">
+        
+        @Html.DropDownListFor(m => m.deckId, Model.decks, "Please select", new { @class = "form-control" })
+        @Html.DropDownListFor(m => m.questionsNumber, Model.flashcardsCount, "Please select", new { @class = "form-control" })               
+</div>
+   
+ </form>
+<div class="modal-footer">
+    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+    <button type="submit" class="btn btn-primary" form="submitForm">
+        Create
+    </button>
+</div>
+
+
+
+
+<script>
+    $(function () {
+              $("#dropDownListdiv").on("change", "select", function () {
+                    var value = $(this).val();
+                    var id = $(this).attr("id");
+                    $.post("@Url.Action("setDropDrownList")", { type: id, value: value }, function (data) {
+                          switch (id) {
+                                case "deckId":
+                        PopulateDropDown("#questionsNumber", data.flashcardsCount);
+                                      break;
+                                 
+                           }
+                  });
+              });
+          });
+    function PopulateDropDown(dropDownId, list) {
+        $(dropDownId).empty();
+        $(dropDownId).append("<option>Please select</option>")
+        $.each(list, function (index, row) {
+            if (index == 0) {
+                $(dropDownId).append("<option value='" + row.text + "' selected='selected'>" + row.text + "</option>");
+            } else {
+                $(dropDownId).append("<option value='" + row.text + "'>" + row.text + "</option>")
+            }
+        });
+    }
+</script>

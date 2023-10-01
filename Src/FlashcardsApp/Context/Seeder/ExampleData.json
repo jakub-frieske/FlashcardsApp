@@ -1,0 +1,111 @@
+[
+  {
+    "Title": "Hiszpański - lotnictwo cz.1",
+    "Description": null,
+    "Image": "http://res.cloudinary.com/dv95b6hyc/image/upload/v1696157157/mp4wikm3oste6ybkfwdc.webp",
+    "Flashcards": [
+      {
+        "Term": "el vuelo",
+        "Definition": "lot"
+      },
+      {
+        "Term": "el helicóptero",
+        "Definition": "helikopter"
+      },
+      {
+        "Term": "el ala",
+        "Definition": "skrzydło"
+      },
+      {
+        "Term": "la presión",
+        "Definition": "ciśnienie"
+      }
+    ]
+  },
+  {
+    "Title": "Angielski C1",
+    "Description": "Zestaw 10 słówek",
+    "Image": "http://res.cloudinary.com/dv95b6hyc/image/upload/v1696157580/izkzhd7hxjqvfj86him6.avif",
+    "Flashcards": [
+      {
+        "Term": "taunt",
+        "Definition": "szydzić"
+      },
+      {
+        "Term": "perky",
+        "Definition": "ożywiony, żwawy"
+      },
+      {
+        "Term": "fraught",
+        "Definition": "pełny (niebezpieczeństw); spięty, rozdrażniony"
+      },
+      {
+        "Term": "wage",
+        "Definition": "zapłata tygodniowa"
+      },
+      {
+        "Term": "obsolete",
+        "Definition": "przestarzały"
+      },
+      {
+        "Term": "amend",
+        "Definition": "wnosić poprawki"
+      },
+      {
+        "Term": "chore",
+        "Definition": "uciążliwy obowiązek"
+      },
+      {
+        "Term": "concise",
+        "Definition": "zwięzły, treściwy"
+      },
+      {
+        "Term": "slapdash",
+        "Definition": "niedbały"
+      },
+      {
+        "Term": "baffle",
+        "Definition": "wprowadzać w zakłopotanie; zmieszany"
+      }
+    ]
+  },
+  {
+    "Title": "English - Vocabulary",
+    "Description": "A list of vocabulary words with their definitions.",
+    "Image": "../images/bg.png",
+    "Flashcards": [
+      {
+        "Term": "obsolete",
+        "Definition": "out-of-date, no longer in use"
+      },
+      {
+        "Term": "restless",
+        "Definition": "unable to rest, relax, or be still"
+      },
+      {
+        "Term": "berserk",
+        "Definition": "mad with anger"
+      },
+      {
+        "Term": "ominous",
+        "Definition": "threatening"
+      },
+      {
+        "Term": "unbearable",
+        "Definition": "intolerable"
+      },
+      {
+        "Term": "irreparable",
+        "Definition": "too bad to put right"
+      },
+      {
+        "Term": "sullen",
+        "Definition": "silent and bad-tempered"
+      },
+      {
+        "Term": "snap",
+        "Definition": "quick and without careful thought"
+      }
+    ]
+  }
+]

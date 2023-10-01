@@ -1,0 +1,66 @@
+﻿@using FlashcardsApp.ViewModels;
+@model EditDeckViewModel
+
+ 
+<div class="modal-header text-center">
+    <h4 class="modal-title w-100 font-weight-bold" id="staticBackdropLabel">
+        Edit Flashcard Set - @Model.Title
+    </h4>
+    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+    </button>
+</div>
+<form method="post" asp-action="Edit" enctype="multipart/form-data" id="submitForm" class="modal-body">
+    <input type="hidden" value="Id" id="Id" />
+
+    <input type="hidden"
+           value="@Model.Image"
+           asp-for="@Model.Image" />
+
+    <div class="form-group mb-3">
+        <label asp-for="Title">Title</label>
+        <input asp-for="Title" class="form-control">
+        <span asp-validation-for="Title" class="text-danger"></span>
+    </div>
+    <div class="form-group mb-3">
+        <label asp-for="Description">Description</label>
+        <input asp-for="Description" class="form-control">
+        <span asp-validation-for="Description" class="text-danger"></span>
+    </div>
+    @if (Model.Flashcards != null)
+        @for (var i = 0; i < Model.Flashcards.Count; i++)
+        {
+            <hr />
+            <span class="d-flex justify-content-center align-items-center mb-3">Flashcard @(i + 1)</span>
+            <div class="form-group mb-3">
+                <input type="hidden"
+                       value="@Model.Flashcards[i].Id"
+                       asp-for="@Model.Flashcards[i].Id" />
+                <input type="hidden"
+                       value="@Model.Flashcards[i].DeckId"
+                       asp-for="@Model.Flashcards[i].DeckId" />
+                <div class="form-group mb-3">
+                    <label asp-for="@Model.Flashcards[i].Term"></label>
+                    <input asp-for="@Model.Flashcards[i].Term" class="form-control">
+                    <span asp-validation-for="@Model.Flashcards[i].Term" class="text-danger"></span>
+                </div>
+                <div class="form-group mb-3">
+                    <label asp-for="@Model.Flashcards[i].Definition"></label>
+                    <input asp-for="@Model.Flashcards[i].Definition" class="form-control">
+                    <span asp-validation-for="@Model.Flashcards[i].Definition" class="text-danger"></span>
+                </div>
+            </div>
+        }
+
+
+
+    </div>
+
+</form>
+
+<div class="modal-footer d-flex justify-content-end">
+    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+    <div class="text-center">
+        <input type="submit" value="Update" class="btn btn-primary" form="submitForm" />
+    </div>
+</div>
+
