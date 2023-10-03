@@ -11,6 +11,6 @@ namespace FlashcardsApp.Context
         public DbSet<Question> Questions { get; set; }
 
         public FlashcardAppDbContext(DbContextOptions<FlashcardAppDbContext> options) : base(options) { }
-        
+
     }
 }

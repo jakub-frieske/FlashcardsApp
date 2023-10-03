@@ -13,7 +13,7 @@ namespace FlashcardsApp.Repository
         {
             _context = context;
         }
-            
+
         public async Task<IEnumerable<Deck>> GetAllAsync()
         {
             return await _context.Decks.ToListAsync();
@@ -32,7 +32,7 @@ namespace FlashcardsApp.Repository
         public bool Save()
         {
             var saved = _context.SaveChanges();
-            return saved > 0 ? true : false;
+            return saved > 0;
         }
 
 
@@ -52,7 +52,7 @@ namespace FlashcardsApp.Repository
                 {
                     _context.Remove(card);
                 }
-               
+
             return Save();
         }
 
@@ -71,12 +71,15 @@ namespace FlashcardsApp.Repository
 
         public async Task<Deck> GetByIdAsync(int id)
         {
-            return await _context.Decks.Include( x=> x.Flashcards).FirstOrDefaultAsync(x => x.Id == id);
+            var deck = await _context.Decks.Include(x => x.Flashcards).FirstOrDefaultAsync(x => x.Id == id);
+
+            return deck ?? throw new ArgumentException($"Deck with id: {id} not found");
         }
 
         public Deck GetById(int id)
         {
-            return _context.Decks.Include(x => x.Flashcards).FirstOrDefault(x => x.Id == id);
+            var deck = _context.Decks.Include(x => x.Flashcards).FirstOrDefault(x => x.Id == id);
+            return deck ?? throw new ArgumentException($"Deck with id: {id} not found");
         }
     }
 }
