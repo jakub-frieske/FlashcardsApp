@@ -13,8 +13,8 @@
 
         <div id="dropDownListdiv">
         
-        @Html.DropDownListFor(m => m.deckId, Model.decks, "Please select", new { @class = "form-control" })
-        @Html.DropDownListFor(m => m.questionsNumber, Model.flashcardsCount, "Please select", new { @class = "form-control" })               
+        @Html.DropDownListFor(m => m.DeckId, Model.Decks, new { @class = "form-control" })
+        @Html.DropDownListFor(m => m.QuestionsNumber, Model.FlashcardsCount, new { @class = "form-control" })               
 </div>
    
  </form>
@@ -33,10 +33,13 @@
               $("#dropDownListdiv").on("change", "select", function () {
                     var value = $(this).val();
                     var id = $(this).attr("id");
+            console.log(id, value);
+
                     $.post("@Url.Action("setDropDrownList")", { type: id, value: value }, function (data) {
                           switch (id) {
-                                case "deckId":
-                        PopulateDropDown("#questionsNumber", data.flashcardsCount);
+                                case "DeckId":
+                                          console.log(data.flashcardsCount);
+                        PopulateDropDown("#QuestionsNumber", data.flashcardsCount);
                                       break;
                                  
                            }
@@ -45,7 +48,6 @@
           });
     function PopulateDropDown(dropDownId, list) {
         $(dropDownId).empty();
-        $(dropDownId).append("<option>Please select</option>")
         $.each(list, function (index, row) {
             if (index == 0) {
                 $(dropDownId).append("<option value='" + row.text + "' selected='selected'>" + row.text + "</option>");

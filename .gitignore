@@ -1,3 +1,9 @@
-.vs
+# Visual Studio temporary files
+.vscode/
+.vs/
 bin/
 obj/
+
+# User-specific files and directories
+*.user
+*.Development.json

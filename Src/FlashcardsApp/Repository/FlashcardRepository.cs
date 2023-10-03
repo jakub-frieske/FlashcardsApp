@@ -14,31 +14,28 @@ namespace FlashcardsApp.Repository
             _context = context;
         }
 
-        public async Task<IEnumerable<Flashcard>> GetAllAsync()
+        public async Task<List<Flashcard>> GetAllAsync()
         {
             return await _context.Flashcards.ToListAsync();
         }
-      
+
         public async Task<Deck> GetDeckbyIdAsync(int id)
         {
-            return await _context.Decks.Include(x => x.Flashcards).FirstOrDefaultAsync(x => x.Id == id);
+            var deck =  await _context.Decks.Include(x => x.Flashcards).FirstOrDefaultAsync(x => x.Id == id);
+            return deck ?? throw new ArgumentException($"Deck with id: {id} not found");
         }
 
         public async Task<Flashcard> GetByIdAsync(int id)
         {
-            return await _context.Flashcards.FindAsync(id);
-        }
-
-        public async Task<IEnumerable<Flashcard>> GetFlashcardByDeckAsync(string deck)
-        {
-            return await _context.Flashcards.Where(d => d.Deck.Title.Contains(deck)).ToListAsync();
+            var flashcard = await _context.Flashcards.FirstOrDefaultAsync(x => x.Id == id);
+            return flashcard ?? throw new ArgumentException($"Flashcard with id: {id} not found");
         }
 
 
         public bool Save()
         {
             var saved = _context.SaveChanges();
-            return saved > 0 ? true : false;
+            return saved > 0;
         }
 
 
