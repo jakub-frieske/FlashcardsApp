@@ -1,9 +1,7 @@
 ﻿using FlashcardsApp.Interfaces;
 using FlashcardsApp.Models;
-using FlashcardsApp.Repository;
 using FlashcardsApp.ViewModels;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Controllers;
 
 namespace FlashcardsApp.Controllers
 {
@@ -35,8 +33,8 @@ namespace FlashcardsApp.Controllers
         {
             var decks = await _repository.GetAllAsync();
             var decksWithFlashcards = await _repository.GetAllWithFlashcardsAsync();
-            ViewData["ActivePage"] = ActivePage();
-            ViewData["MayTakeExam"] = decksWithFlashcards.Count() > 0 ? "true" : "false";
+            //ViewData["ActivePage"] = ActivePage();
+            //ViewData["MayTakeExam"] = decksWithFlashcards.Any() ? "true" : "false";
             return View(decks);
         }
 
@@ -66,15 +64,20 @@ namespace FlashcardsApp.Controllers
 
             if (ModelState.IsValid)
             {
-                var result = await _photoService.AddPhotoAsync(deckVM.ImageToUpload);
-                var image = deckVM.ImageToUpload != null ? result.Url.ToString() : "../images/bg.png";
+                var image = "../images/bg.png";
+                if (deckVM.ImageToUpload != null)
+                {
+                    var result = await _photoService.AddPhotoAsync(deckVM.ImageToUpload);
+                    image = deckVM.ImageToUpload != null ? result.Url.ToString() : image;
+                }
+
 
                 var deck = new Deck
                 {
                     Title = deckVM.Title,
                     Description = deckVM.Description,
                     Image = image,
-                   
+
                 };
 
                 _repository.Add(deck);
@@ -101,7 +104,7 @@ namespace FlashcardsApp.Controllers
             Deck deck = await _repository.GetByIdAsync(id);
             if (deck == null) return View("Error");
 
-            var allFlashcards = deck.Flashcards.ToList();
+            var allFlashcards = deck.Flashcards?.ToList();
 
 
             var deckVM = new EditDeckViewModel
@@ -113,7 +116,7 @@ namespace FlashcardsApp.Controllers
             };
             var decksWithFlashcards = await _repository.GetAllWithFlashcardsAsync();
             ViewData["ActivePage"] = ActivePage();
-            ViewData["MayTakeExam"] = decksWithFlashcards.Count() > 0 ? "true" : "false";
+            ViewData["MayTakeExam"] = decksWithFlashcards.Any() ? "true" : "false";
             return View(deckVM);
         }
 
@@ -123,20 +126,20 @@ namespace FlashcardsApp.Controllers
         /// <param name="id">The ID of the deck to edit.</param>
         /// <returns>The partial view for editing a deck.</returns>
         [HttpGet]
-        public async Task<IActionResult> Edit(int id) 
+        public async Task<IActionResult> Edit(int id)
         {
             var deck = await _repository.GetByIdAsync(id);
             if (deck == null) return View("Error");
 
-            var allFlashcards = deck.Flashcards.ToList();
+            var allFlashcards = deck.Flashcards?.ToList();
 
-           
+
             var deckVM = new EditDeckViewModel
             {
                 Id = deck.Id,
                 Title = deck.Title,
                 Description = deck.Description,
-                Flashcards= allFlashcards,
+                Flashcards = allFlashcards,
                 Image = deck.Image
             };
 
@@ -153,14 +156,14 @@ namespace FlashcardsApp.Controllers
         /// or a partial view with validation errors if unsuccessful.
         /// </returns>
         [HttpPost]
-        public async Task<IActionResult> Edit(int id, EditDeckViewModel deckVM)
+        public IActionResult Edit(int id, EditDeckViewModel deckVM)
         {
             _logger.LogDebug("Edit deck");
 
             if (!ModelState.IsValid)
             {
                 ModelState.AddModelError("", "Failed to edit deck");
-                return PartialView("_Edit", deckVM);  
+                return PartialView("_Edit", deckVM);
             }
 
             var newDeck = new Deck
@@ -172,7 +175,7 @@ namespace FlashcardsApp.Controllers
             };
             _repository.Update(newDeck);
 
-            var flashcard= deckVM.Flashcards;
+            var flashcard = deckVM.Flashcards;
             if (flashcard != null)
                 foreach (var card in flashcard)
                     _flashcardRepository.Update(card);
@@ -192,7 +195,7 @@ namespace FlashcardsApp.Controllers
             var deck = await _repository.GetByIdAsync(id);
             if (deck == null) return View("Error");
 
-            var allFlashcards = deck.Flashcards.ToList();
+            var allFlashcards = deck.Flashcards?.ToList();
 
 
             var deckVM = new EditDeckViewModel
@@ -203,24 +206,23 @@ namespace FlashcardsApp.Controllers
             };
 
 
-            return PartialView("_Delete", deckVM); 
+            return PartialView("_Delete", deckVM);
         }
 
         /// <summary>
         /// Deletes a deck.
         /// </summary>
-        /// <param name="id">The ID of the deck to delete.</param>
         /// <param name="deckVM">The view model for confirming deck deletion.</param>
         /// <returns>
         /// JSON object with a redirect URL to the index page if successful,
         /// or a view for displaying an error if unsuccessful.
         /// </returns>
-        [HttpPost]
-        public async Task<IActionResult> Delete(int id, EditDeckViewModel deckVM)
+        [HttpDelete]
+        public async Task<IActionResult> Delete(EditDeckViewModel deckVM)
         {
             _logger.LogDebug("Delete deck");
 
-            var deck = await _repository.GetByIdAsync(id);
+            var deck = await _repository.GetByIdAsync(deckVM.Id);
 
             if (deck == null)
             {
@@ -239,14 +241,14 @@ namespace FlashcardsApp.Controllers
 
         private string ActivePage()
         {
-            string actionName = this.ControllerContext
+            string? actionName = this.ControllerContext
                 .RouteData
-                .Values["action"]
+                .Values["action"]?
                 .ToString();
 
-            string controllerName = this.ControllerContext
+            string? controllerName = this.ControllerContext
                 .RouteData
-                .Values["controller"]
+                .Values["controller"]?
                 .ToString();
 
             return string.Format($"{controllerName}-{actionName}");

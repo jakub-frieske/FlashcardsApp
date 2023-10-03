@@ -8,35 +8,35 @@ namespace FlashcardsApp.Context.Seeder
     {
         public static void SeedData(IApplicationBuilder applicationBuilder)
         {
-            using (var serviceScope = applicationBuilder.ApplicationServices.CreateScope())
+            using var serviceScope = applicationBuilder.ApplicationServices.CreateScope();
+            var context = serviceScope.ServiceProvider.GetService<FlashcardAppDbContext>();
+
+            context?.Database.EnsureCreated();
+
+            if (context != null && !context.Decks.Any())
             {
-                var context = serviceScope.ServiceProvider.GetService<FlashcardAppDbContext>();
 
-                context.Database.EnsureCreated();
+                string jsonFilePath = "./Context/Seeder/ExampleData.json";
 
-                if (!context.Decks.Any())
+                try
                 {
+                    string jsonContent = File.ReadAllText(jsonFilePath, Encoding.UTF8);
 
-                    string jsonFilePath = "./Context/Seeder/ExampleData.json"; 
 
-                    try
+                    List<Deck>? decks = JsonConvert.DeserializeObject<List<Deck>>(jsonContent);
+                    if (decks != null)
                     {
-                        string jsonContent = File.ReadAllText(jsonFilePath, Encoding.UTF8);
-
-                        List<Deck> decks = JsonConvert.DeserializeObject<List<Deck>>(jsonContent);
                         context.Decks.AddRange(decks);
                         context.SaveChanges();
-
-
                     }
-                    catch (Exception ex)
-                    {
-                        Console.WriteLine($"Exception: {ex.Message}");
-                    }
+
                 }
-                
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Exception: {ex.Message}");
+                }
             }
         }
     }
-    
+
 }

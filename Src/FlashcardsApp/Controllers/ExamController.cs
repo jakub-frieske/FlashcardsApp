@@ -1,12 +1,9 @@
 ﻿using FlashcardsApp.Interfaces;
 using FlashcardsApp.Models;
-using FlashcardsApp.Repository;
-using FlashcardsApp.Services;
 using FlashcardsApp.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Diagnostics;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace FlashcardsApp.Controllers
 {
@@ -17,8 +14,8 @@ namespace FlashcardsApp.Controllers
         private readonly IDeckRepository _deckRepository;
 
         public ExamController(
-            ILogger<ExamController> logger, 
-            IExamRepository repository, 
+            ILogger<ExamController> logger,
+            IExamRepository repository,
             IDeckRepository deckRepository)
         {
             _logger = logger;
@@ -37,7 +34,7 @@ namespace FlashcardsApp.Controllers
             var exam = await _repository.GetByIdAsync(id);
             if (exam == null)
             {
-                return NotFound(); 
+                return NotFound();
             }
 
             var examVM = new ExamViewModel()
@@ -49,8 +46,8 @@ namespace FlashcardsApp.Controllers
             };
 
             var decksWithFlashcards = await _deckRepository.GetAllWithFlashcardsAsync();
-            ViewData["ActivePage"] = ActivePage();
-            ViewData["MayTakeExam"] = decksWithFlashcards.Count() > 0 ? "true" : "false";
+            //ViewData["ActivePage"] = ActivePage();
+            //ViewData["MayTakeExam"] = decksWithFlashcards.Any() ? "true" : "false";
             return View(examVM);
         }
 
@@ -60,7 +57,7 @@ namespace FlashcardsApp.Controllers
         /// <param name="examVM">The view model representing the exam.</param>
         /// <returns>Redirects to the exam detail page.</returns>
         [HttpPost]
-        public async Task<IActionResult> Index(ExamViewModel examVM)
+        public IActionResult Index(ExamViewModel examVM)
         {
             var exam = new Exam()
             {
@@ -72,10 +69,10 @@ namespace FlashcardsApp.Controllers
             var result = _repository.CalculateScore(exam);
             _repository.Update(result);
 
-            return RedirectToAction("Detail", new { id = result.Id } );
+            return RedirectToAction("Detail", new { id = result.Id });
         }
 
-        
+
         /// <summary>
         /// Displays a list of exam history.
         /// </summary>
@@ -86,7 +83,7 @@ namespace FlashcardsApp.Controllers
             var exams = await _repository.GetAllAsync();
             var decksWithFlashcards = await _deckRepository.GetAllWithFlashcardsAsync();
             ViewData["ActivePage"] = ActivePage();
-            ViewData["MayTakeExam"] = decksWithFlashcards.Count() > 0 ? "true" : "false";
+            ViewData["MayTakeExam"] = decksWithFlashcards.Any() ? "true" : "false";
             return View(exams);
         }
 
@@ -105,7 +102,7 @@ namespace FlashcardsApp.Controllers
 
             var decksWithFlashcards = await _deckRepository.GetAllWithFlashcardsAsync();
             ViewData["ActivePage"] = ActivePage();
-            ViewData["MayTakeExam"] = decksWithFlashcards.Count() > 0 ? "true" : "false";
+            ViewData["MayTakeExam"] = decksWithFlashcards.Any() ? "true" : "false";
             return View(examVM);
         }
 
@@ -117,15 +114,20 @@ namespace FlashcardsApp.Controllers
         public async Task<IActionResult> RandomFlashcards()
         {
             var decks = await _deckRepository.GetAllWithFlashcardsAsync();
-            if (decks.Count() == 0)
+            if (!decks.Any())
             {
                 return NotFound();
             }
-            Deck defaultDeck = decks.OrderBy(d => Guid.NewGuid() ).FirstOrDefault();
+            var defaultDeck = decks.OrderBy(d => Guid.NewGuid()).FirstOrDefault();
 
-            var newExam = _repository.CreateExam(defaultDeck.Id, 1);
-            _repository.Add(newExam);
-            return RedirectToAction("Index", new { id = newExam.Id });
+            if (defaultDeck != null)
+            {
+                var newExam = _repository.CreateExam(defaultDeck.Id, 1);
+                _repository.Add(newExam);
+                return RedirectToAction("Index", new { id = newExam.Id });
+            }
+
+            return NotFound();
         }
 
         /// <summary>
@@ -137,24 +139,22 @@ namespace FlashcardsApp.Controllers
         public async Task<IActionResult> Create(int? defaultFlashcardSet = 1)
         {
             var decks = await _deckRepository.GetAllWithFlashcardsAsync();
-            if(decks.Count() == 0)
-            {
-                return PartialView("_Create");
-            }
+            
             var defaultDeck = decks.Where(x => x.Id == defaultFlashcardSet).FirstOrDefault();
-            int flashcardsCount = defaultDeck.Flashcards.Count() ;
+
+            int flashcardsCount = defaultDeck?.Flashcards?.Count ?? 0;
 
             if (defaultDeck == null)
             {
                 var newDeck = decks.FirstOrDefault();
-                defaultFlashcardSet = newDeck.Id;
-                flashcardsCount = newDeck.Flashcards.Count();
+                defaultFlashcardSet = newDeck?.Id ?? 1;
+                flashcardsCount = newDeck?.Flashcards?.Count ?? 0;
             }
 
             var examVM = new CreateExamViewModel()
             {
-                decks = new SelectList(decks, "Id", "Title", defaultFlashcardSet),
-                flashcardsCount = new SelectList(Enumerable.Range(1, flashcardsCount >0 ? flashcardsCount : 1), 1)
+                Decks = new SelectList(decks, "Id", "Title", defaultFlashcardSet),
+                FlashcardsCount = new SelectList(Enumerable.Range(1, flashcardsCount > 0 ? flashcardsCount : 1), 1)
             };
 
 
@@ -169,16 +169,16 @@ namespace FlashcardsApp.Controllers
         /// <param name="value">The selected value.</param>
         /// <returns>The updated JSON response.</returns>
         [HttpPost]
-        public JsonResult setDropDrownList(string type, int value)
+        public JsonResult SetDropDrownList(string type, int value)
         {
             var examVM = new CreateExamViewModel();
             switch (type)
             {
-                case "deckId":
+                case "DeckId":
                     var defaultDeck = _deckRepository.GetById(value);
-                    var flashcardsCount = defaultDeck.Flashcards.Count;
+                    var flashcardsCount = defaultDeck?.Flashcards?.Count ?? 1;
                     var selectList = new SelectList(Enumerable.Range(1, flashcardsCount));
-                    examVM.flashcardsCount = selectList;
+                    examVM.FlashcardsCount = selectList;
                     break;
             }
             return Json(examVM);
@@ -196,11 +196,14 @@ namespace FlashcardsApp.Controllers
 
             if (ModelState.IsValid)
             {
-                var newExam = _repository.CreateExam(int.Parse(model.deckId), int.Parse(model.questionsNumber));
-                _repository.Add(newExam);
+                if (!string.IsNullOrEmpty(model.DeckId) && !string.IsNullOrEmpty(model.QuestionsNumber))
+                {
+                    var newExam = _repository.CreateExam(int.Parse(model.DeckId), int.Parse(model.QuestionsNumber));
+                    _repository.Add(newExam);
 
-                //return RedirectToAction("Index", new { id = newExam.Id });
-                return Json(new { redirectUrl = Url.Action("Index", "Exam", new { id = newExam.Id }) });
+                    //return RedirectToAction("Index", new { id = newExam.Id });
+                    return Json(new { redirectUrl = Url.Action("Index", "Exam", new { id = newExam.Id }) });
+                }
 
             }
 
@@ -219,14 +222,14 @@ namespace FlashcardsApp.Controllers
 
         private string ActivePage()
         {
-            string actionName = this.ControllerContext
+            string? actionName = this.ControllerContext
                 .RouteData
-                .Values["action"]
+                .Values["action"]?
                 .ToString();
 
-            string controllerName = this.ControllerContext
+            string? controllerName = this.ControllerContext
                 .RouteData
-                .Values["controller"]
+                .Values["controller"]?
                 .ToString();
 
             return string.Format($"{controllerName}-{actionName}");

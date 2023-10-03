@@ -2,7 +2,7 @@
 using FlashcardsApp.Interfaces;
 using FlashcardsApp.Models;
 using Microsoft.EntityFrameworkCore;
-using System;
+using System.Linq;
 
 namespace FlashcardsApp.Repository
 {
@@ -15,40 +15,38 @@ namespace FlashcardsApp.Repository
             _context = context;
         }
 
-        public async Task<IEnumerable<Exam>> GetAllAsync()
+        public async Task<ICollection<Exam>> GetAllAsync()
         {
-            return await _context.Exams.OrderByDescending(e => e.Solved ).ToListAsync();
+            return await _context.Exams.OrderByDescending(e => e.Solved).ToListAsync();
         }
-      
+
         public async Task<Exam> GetByIdAsync(int id)
         {
-            return await _context.Exams.Include(x => x.Questions).FirstOrDefaultAsync(x => x.Id == id);
+            var exam = await _context.Exams.Include(x => x.Questions).FirstOrDefaultAsync(x => x.Id == id);
+            return exam ?? throw new ArgumentException($"Exam with id: {id} not found");
         }
 
         public Exam GetById(int id)
         {
-            return _context.Exams.Where(x=> x.Id == id).FirstOrDefault();
+            var exam = _context.Exams.Where(x => x.Id == id).FirstOrDefault();
+            return exam ?? throw new ArgumentException($"Exam with id: {id} not found");
+
         }
 
         public Exam CreateExam(int deckId, int questionsNumber)
         {
             var deck = _context.Decks.Include(x => x.Flashcards).Where(d => d.Id == deckId).FirstOrDefault();
-            var flashcards = deck.Flashcards.OrderBy(r => Guid.NewGuid()).Take(questionsNumber).ToList();
-           
+            var flashcards = deck?.Flashcards?.OrderBy(r => Guid.NewGuid()).Take(questionsNumber).ToList();
+
             DateTime currentDateTime = DateTime.Now;
             string formattedDateTime = currentDateTime.ToString("dddd, dd MMMM yyyy HH:mm:ss");
-            var listQuestions = new List<Question>();
+            var listQuestions = (from flashcard in flashcards
+                                 select new Question()
+                                 {
+                                     Flashcard = flashcard
+                                 }).ToList();
 
-            foreach(var flashcard in flashcards)
-            {
-                listQuestions.Add(
-                    new Question()
-                    {
-                        Flashcard = flashcard
-                    });
-            }
-
-            Exam newExam = new Exam()
+            Exam newExam = new()
             {
                 Title = "Exam " + formattedDateTime,
                 Questions = listQuestions
@@ -64,7 +62,10 @@ namespace FlashcardsApp.Repository
 
             foreach (var item in exam.Questions)
             {
-                points += this.CheckQuestionAnswer(item.UserAnswer, item.Flashcard.Definition) ? 1 : 0;
+                if (item.UserAnswer != null && item.Flashcard != null && item.Flashcard.Definition != null)
+                {
+                    points += CheckQuestionAnswer(item.UserAnswer, item.Flashcard.Definition) ? 1 : 0;
+                }
             }
 
             DateTime currentDateTime = DateTime.Now;
@@ -76,7 +77,7 @@ namespace FlashcardsApp.Repository
             return exam;
         }
 
-        private bool CheckQuestionAnswer(string userAnswer, string correctAnswer)
+        private static bool CheckQuestionAnswer(string userAnswer, string correctAnswer)
         {
             return String.Equals(userAnswer, correctAnswer, StringComparison.OrdinalIgnoreCase);
         }
@@ -85,7 +86,7 @@ namespace FlashcardsApp.Repository
         public bool Save()
         {
             var saved = _context.SaveChanges();
-            return saved > 0 ? true : false;
+            return saved > 0;
         }
 
 

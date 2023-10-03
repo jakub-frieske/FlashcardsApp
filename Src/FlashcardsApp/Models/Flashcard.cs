@@ -7,9 +7,9 @@ namespace FlashcardsApp.Models
     {
         [Key]
         public int Id { get; set; }
-        public string Term { get; set; }
+        public string Term { get; set; } = null!;
         [MaxLength(150)]
-        public string Definition { get; set; }
+        public string Definition { get; set; } = null!;
 
         [ForeignKey("Decks")]
         public int DeckId { get; set; }
