@@ -32,10 +32,21 @@ namespace FlashcardsApp.Controllers
         public async Task<IActionResult> Index()
         {
             var decks = await _repository.GetAllAsync();
+            var decksVM = new List<DeckViewModel>();
+            foreach (var item in decks)
+                decksVM.Add(new DeckViewModel()
+                {
+                    Id = item.Id,
+                    Title = item.Title,
+                    Description = item.Description,
+                    Image = item.Image,
+                    Flashcards = item.Flashcards?.ToList()
+                }
+                    );
             var decksWithFlashcards = await _repository.GetAllWithFlashcardsAsync();
             //ViewData["ActivePage"] = ActivePage();
             //ViewData["MayTakeExam"] = decksWithFlashcards.Any() ? "true" : "false";
-            return View(decks);
+            return View(decksVM);
         }
 
         /// <summary>
@@ -104,15 +115,12 @@ namespace FlashcardsApp.Controllers
             Deck deck = await _repository.GetByIdAsync(id);
             if (deck == null) return View("Error");
 
-            var allFlashcards = deck.Flashcards?.ToList();
-
-
             var deckVM = new EditDeckViewModel
             {
                 Id = deck.Id,
                 Title = deck.Title,
                 Description = deck.Description,
-                Flashcards = allFlashcards
+                Flashcards = deck.Flashcards?.ToList()
             };
             var decksWithFlashcards = await _repository.GetAllWithFlashcardsAsync();
             ViewData["ActivePage"] = ActivePage();
