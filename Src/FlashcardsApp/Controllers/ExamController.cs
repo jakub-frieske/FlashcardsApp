@@ -81,10 +81,20 @@ namespace FlashcardsApp.Controllers
         public async Task<IActionResult> History()
         {
             var exams = await _repository.GetAllAsync();
+            var examsVM = new List<ExamHistoryViewModel>();
+            foreach (var item in exams)
+                examsVM.Add(new ExamHistoryViewModel()
+                {
+                    Id = item.Id,
+                    Title = item.Title,
+                    Score = item.Score,
+                    Solved = item.Solved
+                });
+
             var decksWithFlashcards = await _deckRepository.GetAllWithFlashcardsAsync();
             ViewData["ActivePage"] = ActivePage();
             ViewData["MayTakeExam"] = decksWithFlashcards.Any() ? "true" : "false";
-            return View(exams);
+            return View(examsVM);
         }
 
         /// <summary>
@@ -96,10 +106,16 @@ namespace FlashcardsApp.Controllers
         public async Task<IActionResult> Detail(int id)
         {
 
-            Exam examVM = await _repository.GetByIdAsync(id);
-            if (examVM == null) return View("Error");
+            var exam = await _repository.GetByIdAsync(id);
+            if (exam == null) return View("Error");
 
+            var examVM = new ExamViewModel()
+            {
+                Id = exam.Id,
+                Title = exam.Title,
+                Questions = exam.Questions.ToList(),
 
+            };
             var decksWithFlashcards = await _deckRepository.GetAllWithFlashcardsAsync();
             ViewData["ActivePage"] = ActivePage();
             ViewData["MayTakeExam"] = decksWithFlashcards.Any() ? "true" : "false";
@@ -139,7 +155,7 @@ namespace FlashcardsApp.Controllers
         public async Task<IActionResult> Create(int? defaultFlashcardSet = 1)
         {
             var decks = await _deckRepository.GetAllWithFlashcardsAsync();
-            
+
             var defaultDeck = decks.Where(x => x.Id == defaultFlashcardSet).FirstOrDefault();
 
             int flashcardsCount = defaultDeck?.Flashcards?.Count ?? 0;
