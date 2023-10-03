@@ -3,14 +3,13 @@ using CloudinaryDotNet.Actions;
 using FlashcardsApp.Helpers;
 using FlashcardsApp.Interfaces;
 using Microsoft.Extensions.Options;
-using System;
 
 namespace FlashcardsApp.Services
 {
     public class PhotoService : IPhotoService
     {
-        
-        private readonly Cloudinary _cloundinary;
+
+        private readonly Cloudinary _cloundinary = null!;
 
         public PhotoService(IOptions<CloudinarySettings> config)
         {
@@ -19,14 +18,14 @@ namespace FlashcardsApp.Services
                 config.Value.ApiKey,
                 config.Value.ApiSecret
                 );
-            if(acc.ApiKey != null)
+            if (acc.ApiKey != null)
                 _cloundinary = new Cloudinary(acc);
         }
 
         public async Task<ImageUploadResult> AddPhotoAsync(IFormFile file)
         {
             var uploadResult = new ImageUploadResult();
-            if (file != null && file.Length > 0 )
+            if (file != null && file.Length > 0)
             {
                 using var stream = file.OpenReadStream();
                 var uploadParams = new ImageUploadParams

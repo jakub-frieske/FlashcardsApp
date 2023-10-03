@@ -43,15 +43,17 @@ namespace FlashcardsApp.Tests.Controllers
             var mockRepository = new Mock<IFlashcardRepository>();
             var mockUrlHelper = new Mock<IUrlHelper>();
 
-          
+
             var deckId = 1;
-            var deck = new Deck { Id = deckId, Title="Deck test" };
+            var deck = new Deck { Id = deckId, Title = "Deck test" };
             mockRepository.Setup(repo => repo.GetDeckbyIdAsync(deckId)).ReturnsAsync(deck);
 
-            var flashcardVM = new FlashcardViewModel { 
-                Term="Term test", 
-                Definition="Definition Test",
-                DeckId = deck.Id };
+            var flashcardVM = new FlashcardViewModel
+            {
+                Term = "Term test",
+                Definition = "Definition Test",
+                DeckId = deck.Id
+            };
 
             var expectedRedirectUrl = $"/Deck/Detail/{deckId}";
             mockUrlHelper.Setup(x => x.Action(It.IsAny<UrlActionContext>())).Returns(expectedRedirectUrl);

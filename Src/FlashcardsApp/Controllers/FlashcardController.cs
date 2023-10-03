@@ -1,12 +1,8 @@
 ﻿using FlashcardsApp.Interfaces;
 using FlashcardsApp.Models;
-using FlashcardsApp.Repository;
-using FlashcardsApp.Services;
 using FlashcardsApp.ViewModels;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Diagnostics;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace FlashcardsApp.Controllers
 {
@@ -16,7 +12,7 @@ namespace FlashcardsApp.Controllers
         private readonly IFlashcardRepository _repository;
 
         public FlashcardController(
-            ILogger<FlashcardController> logger, 
+            ILogger<FlashcardController> logger,
             IFlashcardRepository repository)
         {
             _logger = logger;
@@ -41,8 +37,8 @@ namespace FlashcardsApp.Controllers
                 Definition = "",
                 DeckId = deck.Id
             };
-                
-            return PartialView("_Create",newFlashcard);
+
+            return PartialView("_Create", newFlashcard);
         }
 
 
@@ -82,7 +78,7 @@ namespace FlashcardsApp.Controllers
         /// </summary>
         /// <param name="id">The ID of the flashcard to edit.</param>
         /// <returns>The partial view for editing a flashcard.</returns>
-        [HttpGet]        
+        [HttpGet]
         public async Task<IActionResult> Edit(int id)
         {
             var card = await _repository.GetByIdAsync(id);
@@ -107,7 +103,7 @@ namespace FlashcardsApp.Controllers
         /// <param name="cardVM">The view model representing the edited flashcard.</param>
         /// <returns>Redirects to the deck detail page.</returns>
         [HttpPost]
-        public async Task<IActionResult> Edit(int id, FlashcardViewModel cardVM)
+        public IActionResult Edit(int id, FlashcardViewModel cardVM)
         {
             _logger.LogDebug("Update flashcard");
             if (!ModelState.IsValid)
@@ -127,7 +123,7 @@ namespace FlashcardsApp.Controllers
 
 
             return Json(new { redirectUrl = Url.Action("Detail", "Deck", new { id = cardVM.DeckId }) });
-           // return RedirectToAction("Detail", "Deck", new { id = card.DeckId });
+            // return RedirectToAction("Detail", "Deck", new { id = card.DeckId });
         }
 
         /// <summary>

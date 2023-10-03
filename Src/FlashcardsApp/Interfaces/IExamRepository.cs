@@ -4,10 +4,10 @@ namespace FlashcardsApp.Interfaces
 {
     public interface IExamRepository
     {
-        Task<IEnumerable<Exam>> GetAllAsync();
+        Task<ICollection<Exam>> GetAllAsync();
         Task<Exam> GetByIdAsync(int id);
         Exam CreateExam(int deckId, int questionsNumber);
-        public Exam CalculateScore(Exam exam);
+        Exam CalculateScore(Exam exam);
 
         bool Add(Exam exam);
         bool Update(Exam exam);
