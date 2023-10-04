@@ -8,7 +8,7 @@ namespace FlashcardsApp.Models
         public int Id { get; set; }
         public string? UserAnswer { get; set; }
 
-        public Flashcard? Flashcard { get; set; }
+        public Flashcard Flashcard { get; set; } = null!;
 
     }
 }

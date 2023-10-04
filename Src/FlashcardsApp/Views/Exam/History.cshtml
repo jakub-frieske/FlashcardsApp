@@ -3,6 +3,7 @@
 
 @{
     ViewData["Title"] = "Exams History";
+    var may = (ViewData["MayTakeExam"] ?? string.Empty) as string;
 }
 <style>
     .card.card-cascade.narrower .view.view-cascade {
@@ -39,8 +40,11 @@
 
             <div class="view view-cascade gradient-card-header green-gradient narrower py-2 mx-4 mb-3 d-flex justify-content-center align-items-center">
                 <h1 class="text-white mx-3">Exams History</h1>
+                @if (may == "true")
+{
                 <a class="modal-link btn btn-primary d-inline-block " data-bs-toggle="modal" data-bs-target="#staticBackdrop" 
                  asp-controller="Exam" asp-action="Create">Take exam</a>
+}
             </div>
 
             <div class="px-4 pb-3">

@@ -12,5 +12,13 @@ namespace FlashcardsApp.Context
 
         public FlashcardAppDbContext(DbContextOptions<FlashcardAppDbContext> options) : base(options) { }
 
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Deck>()
+                .HasMany(i => i.Flashcards)
+                .WithOne(c => c.Deck)
+                .OnDelete(DeleteBehavior.Cascade);
+        }
+
     }
 }
