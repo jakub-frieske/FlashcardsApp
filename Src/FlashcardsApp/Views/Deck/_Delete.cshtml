@@ -20,7 +20,7 @@
             <input asp-for="Description" class="form-control" disabled>
             <span asp-validation-for="Description" class="text-danger"></span>
         </div>
-        @for (var i = 0; i < Model.Flashcards.Count; i++)
+        @for (var i = 0; i < Model.Flashcards?.Count; i++)
         {
             <hr />
             <span class="d-flex justify-content-center align-items-center mb-3">Flashcard @(i + 1)</span>

@@ -12,7 +12,7 @@
         <div class="card card-cascade narrower">
             <div class="view view-cascade gradient-card-header green-gradient narrower pb-2 pt-3 mx-4 mb-3">
                 <h1 class="text-white mx-3">@Model.Title</h1>
-                <h4 class="text-white mx-3">@Model.Questions[0].Flashcard.Deck.Title</h4>
+                <h4 class="text-white mx-3">@Model.Questions[0]??.Flashcard.Deck?.Title</h4>
             </div>
 
             <div class="px-4 pb-3 m-2">

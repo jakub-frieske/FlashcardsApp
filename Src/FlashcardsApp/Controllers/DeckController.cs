@@ -225,7 +225,7 @@ namespace FlashcardsApp.Controllers
         /// JSON object with a redirect URL to the index page if successful,
         /// or a view for displaying an error if unsuccessful.
         /// </returns>
-        [HttpDelete]
+        [HttpPost]
         public async Task<IActionResult> Delete(EditDeckViewModel deckVM)
         {
             _logger.LogDebug("Delete deck");
@@ -237,7 +237,7 @@ namespace FlashcardsApp.Controllers
                 return View("Error");
             }
 
-            if (!string.IsNullOrEmpty(deck.Image))
+            if (deck.Image != "../images/bg.png" && !string.IsNullOrEmpty(deck.Image))
             {
                 _ = _photoService.DeletePhotoAsync(deck.Image);
             }
